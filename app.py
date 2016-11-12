@@ -35,8 +35,8 @@ def index():
 @app.route('/paypal_Return', methods=['GET'])
 def paypal_Return():
     # ID of the payment. This ID is provided when creating payment.
-    paymentId = request.args['PayerID']
-    payer_id = request.args['paymentId']
+    paymentId = request.args['paymentId']
+    payer_id = request.args['PayerID']
     payment = paypal.Payment.find(paymentId)
 
     # PayerID is required to approve the payment.
