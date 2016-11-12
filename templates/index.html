@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PayPal Tutorial</title>
+    <link type="text/css" rel="stylesheet" href="static/stylesheets/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="static/stylesheets/jquery.dataTables.css">
+    <script src="static/javascripts/jquery.min.js"></script>
+    <script src="static/javascripts/bootstrap.min.js"></script>
+    <script src="static/javascripts/jquery.dataTables.js"></script>
+</head>
+<body>
+      <div class="container">
+        <div class="jumbotron">
+            <h1>PayPal Tutorial</h1>
+            <p>PayPal Demo</p>
+        </div>
+        <h2>Check out with PayPal</h2>
+          <a href="/paypal_payment">
+              <img class="img-responsive" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" />
+          </a>
+        <h2>PayPal Credit</h2>
+          <a href="/credit_card_payment">
+              <img class="img-responsive" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/ppcredit-logo-large.png" alt="PayPal Credit" />
+          </a>
+        <h2>Refund_Payment</h2>
+          <form>
+              <div class="form-group">
+                  <input type="text" class="form-control" id="sale_id" placeholder="Sale_ID">
+              </div>
+              <div class="form-group">
+                  <input type="number" class="form-control" id="amount" placeholder="Amount">
+              </div>
+              <button type="button"  id="Refund" class="btn btn-default">Refund</button>
+           </form>
+           <h3 id="Refund_Result"></h3>
+
+        <h2>Payment History Detail</h2>
+          <table id="datatables" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Payment_ID</th>
+                    <th>Sale_ID</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+               {% for history in history_list %}
+                   <tr>
+                        <td>{{ history.payment_id }}</td>
+                        <td>{{ history.sale_id }}</td>
+                        <td>{{ history.amount }}</td>
+                    </tr>
+               {% endfor%}
+            </tbody>
+        </table>
+      </div>
+
+    <script>
+        $('#datatables').DataTable();
+
+        $("#Refund").on('click', function(event) {
+            event.preventDefault();
+            var sale_id = $("#sale_id").val();
+            var amount = $("#amount").val();
+            var data = {
+                sale_id : sale_id,
+                amount : amount
+            };
+            var data_json = JSON.stringify(data);
+
+            $.ajax({
+                url: '/API/refund_payment',
+                type: "POST",
+                data: data_json,
+                dataType: "json",
+                contentType: "application/json",
+                success: function (data, textStatus, jqXHR) {
+                    if(data == 11){
+                         debugger;
+                        $("#Refund_Result").text("Refund Success");
+                    }
+                    else{
+                        $("#Refund_Result").text("Refund Error");
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("error:" + jqXHR);
+                }
+            });
+        });
+
+
+    </script>
+
+</body>
+</html>
